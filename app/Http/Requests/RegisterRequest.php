@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class RegisterRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class RegisterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +23,22 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        $rules = [
+            'email' => 'email|unique:users|string|max:255|required',
+            'name' => 'string|max:255|required',
+            'password' => 'string|min:8|required|confirmed',
         ];
+
+        return $rules;
+    }
+
+    protected function prepareForValidation(): void {
+        $data = [];
+
+        $data['name'] = Str::title($this->name);
+        $data['email'] = Str::lower($this->email);
+        $data['role_id'] = RoleEnum::REVIEWER->value;
+
+        $this->merge($data);
     }
 }

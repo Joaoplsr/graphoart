@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class LoginRequest extends FormRequest
 {
-    /**
+    /** 
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,20 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        $rules = [
+            'email' => 'required|email|string|max:255',
+            'password' => 'required|min:8|string'
         ];
+
+        return $rules;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $data = [];
+
+        $data['email'] = Str::lower($this->email);
+
+        $this->merge($data);
     }
 }

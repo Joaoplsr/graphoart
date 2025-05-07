@@ -13,9 +13,8 @@ Route::controller(AuthController::class)
 });
 
 // Rotas Protegidas
-Route::middleware('auth-sanctum')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
 });
 
 // Route::get('/user', function (Request $request) {
