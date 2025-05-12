@@ -8,7 +8,8 @@ class ResponseService {
     public static function success($message, $code = Response::HTTP_OK, $data = [])
     {
         return response()->json([
-            'message' => $message
+            'message' => $message,
+            'data' => $data
         ], $code);
     }
 
