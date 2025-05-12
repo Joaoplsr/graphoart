@@ -5,7 +5,7 @@ namespace App\Services;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResponseService {
-    public static function success($message, $code = Response::HTTP_OK)
+    public static function success($message, $code = Response::HTTP_OK, $data = [])
     {
         return response()->json([
             'message' => $message
