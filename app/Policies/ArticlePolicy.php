@@ -13,7 +13,6 @@ class ArticlePolicy
         return in_array($user->role_id, [RoleEnum::ADMIN->value, RoleEnum::EDITOR->value]);
     }
 
-
     public function index(User $user)
     {
         return $this->isAdminOrEditor($user)
@@ -63,5 +62,4 @@ class ArticlePolicy
         }
         return Response::deny('Você não tem permissão para acessar esta página');
     }
-
 }
