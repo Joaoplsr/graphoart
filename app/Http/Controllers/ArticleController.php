@@ -10,6 +10,8 @@ use App\Services\ResponseService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\ArticleStoreRequest;
 use App\Http\Requests\ArticleUpdateRequest;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -18,19 +20,29 @@ class ArticleController extends Controller
 
     public function index()
     {
-        $articles = Article::all();
+        Gate::authorize('index', Article::class);
+        $articles = Article::query()
+        ->user()
+        ->get();
         return ResponseService::success('Artigos encontrados com sucesso', Response::HTTP_OK, $articles);
     }
 
     public function indexDraft()
     {
-        $articles = Article::where('status_id', StatusEnum::DRAFT)->get();
+        Gate::authorize('indexDraft', Article::class);
+        $articles = Article::query()
+        ->user()
+        ->where('status_id', StatusEnum::DRAFT)
+        ->get();
         return ResponseService::success('Artigos em rascunho encontrados com sucesso', Response::HTTP_OK, $articles);
     }
 
     public function indexInReview()
     {
-        $articles = Article::where('status_id', StatusEnum::IN_REVIEW)->get();
+        $articles = Article::query()
+        ->user()
+        ->where('status_id', StatusEnum::IN_REVIEW)
+        ->get();
         return ResponseService::success('Artigos em revisão encontrados com sucesso', Response::HTTP_OK, $articles);
     }
 
@@ -50,21 +62,24 @@ class ArticleController extends Controller
 
     public function inReview(Article $article)
     {
-        $article->status_id = StatusEnum::IN_REVIEW;
+        Gate::authorize('inReview', $article);
+        $article->status_id = StatusEnum::IN_REVIEW->value;
         $article->save();
         return ResponseService::success('Artigo enviado para revisão com sucesso', Response::HTTP_OK);
     }
 
     public function reviewed(Article $article)
     {
-        $article->status_id = StatusEnum::REVIEWED;
+        Gate::authorize('reviewed', $article);
+        $article->status_id = StatusEnum::REVIEWED->value;
         $article->save();
         return ResponseService::success('Artigo revisado com sucesso', Response::HTTP_OK);
     }
 
     public function published(Article $article)
     {
-        $article->status_id = StatusEnum::PUBLISHED;
+        Gate::authorize('published', $article);
+        $article->status_id = StatusEnum::PUBLISHED->value;
         $article->save();
         return ResponseService::success('Artigo publicado com sucesso', Response::HTTP_OK);
     }
@@ -77,6 +92,7 @@ class ArticleController extends Controller
 
     public function store(ArticleStoreRequest $request)
     {
+        Gate::authorize('store', Article::class);
         Article::create($request->all());
         return ResponseService::success('Artigo criado com sucesso', Response::HTTP_CREATED);
     }
@@ -89,6 +105,7 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
+        Gate::authorize('destroy', $article);
         $article->delete();
         return ResponseService::success('Artigo deletado com sucesso', Response::HTTP_OK);
     }   

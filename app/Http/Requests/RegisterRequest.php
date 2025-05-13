@@ -35,9 +35,14 @@ class RegisterRequest extends FormRequest
     protected function prepareForValidation(): void {
         $data = [];
 
+        
+
         $data['name'] = Str::title($this->name);
         $data['email'] = Str::lower($this->email);
-        $data['role_id'] = RoleEnum::REVIEWER->value;
+
+        if (empty($this->role_id)) {
+            $data['role_id'] = RoleEnum::REVIEWER->value;
+        }
 
         $this->merge($data);
     }
