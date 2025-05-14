@@ -30,8 +30,9 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         $token = $user->createToken('ACCESS_TOKEN')->plainTextToken;
         $role = $user->returnRole();
+        $name = $user->name;
 
-        return ResponseService::loginSuccess('Logado com sucesso!', Response::HTTP_OK, $token, $role);
+        return ResponseService::loginSuccess('Logado com sucesso!', Response::HTTP_OK, $token, $role, $name);
     }
 
     public function logout(Request $request) {

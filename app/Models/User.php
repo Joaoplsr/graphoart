@@ -62,9 +62,9 @@ class User extends Authenticatable
     public function returnRole()
     {
         $roleId = $this->role_id;
-        if ($roleId === RoleEnum::ADMIN){
+        if ($roleId === RoleEnum::ADMIN->value){
             return 'admin';
-        } else if ($roleId === RoleEnum::EDITOR){
+        } else if ($roleId === RoleEnum::EDITOR->value){
             return 'editor';
         } else {
             return 'reviewer';
