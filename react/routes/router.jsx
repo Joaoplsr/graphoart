@@ -1,42 +1,61 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import LoginForm from "../components/LoginForm";
-import NotFound from "../pages/NotFound";
-import AdminLayout from "../layouts/AdminLayout";
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import PublicLayout from '../layouts/PublicLayout';
+import AdminLayout from '../layouts/AdminLayout';
+import EditorLayout from '../layouts/EditorLayout';
+import ReviewerLayout from '../layouts/ReviewerLayout';
+import NotFound from '../pages/NotFound';
+import LoginForm from '../components/LoginForm';
+import ProtectedRoute from '../components/ProtectedRoute';
 
-// Componente de proteção
-const RoleProtectedRoute = ({ allowedRoles, element }) => {
-    const { user } = useAuth();
-
-    if (!user) return <Navigate to="/login" replace />;
-    if (!allowedRoles.includes(user.role)) return <Navigate to="/unauthorized" replace />;
-
-    return element;
-};
-
-// Roteador
-export const router = createBrowserRouter([
-    {
-        path: "/login",
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <PublicLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/login" />,
+      },
+      {
+        path: 'login',
         element: <LoginForm />,
-    },
-    {
-        path: "*",
-        element: <NotFound />,
-    },
-    {
-        path: "/admin",
-        element: (
-            <RoleProtectedRoute allowedRoles={["admin"]} element={<AdminLayout />} />
-        ),
-        children: [
-            {
-                path: "nadaaver",
-                index: true,
-                element: <h1>Nada a ver</h1>
-            },
-        ]
-    },
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <ProtectedRoute allowedRoles={['admin']} />,
+    children: [
+      {
+        index: true,
+        element: <AdminLayout />,
+      },
+    ],
+  },
+  {
+    path: '/editor',
+    element: <ProtectedRoute allowedRoles={['editor']} />,
+    children: [
+      {
+        index: true,
+        element: <EditorLayout />,
+      },
+    ],
+  },
+  {
+    path: '/reviewer',
+    element: <ProtectedRoute allowedRoles={['reviewer']} />,
+    children: [
+      {
+        index: true,
+        element: <ReviewerLayout />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
 ]);
 
 export default router;

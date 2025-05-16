@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios-client";
-import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [disabled, setDisabled] = useState(false);
-    const { login } = useAuth();
     const navigate = useNavigate();
+    const { token, setToken, setUser, user } = useStateContext();
 
+  
     useEffect(() => {
-        const token = localStorage.getItem("ACCESS_TOKEN");
-        if (token) {
-            login({ name: localStorage.getItem("NAME"), role: localStorage.getItem("ROLE") });
-            navigate(`/${localStorage.getItem("ROLE")}`);
-        }
-    }, []);
+      if (token) {
+        navigate(`/${user?.role}`);
+      }
+    }, [token]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,14 +25,17 @@ export default function LoginForm() {
         api.post("/auth/login", { email, password })
             .then((response) => {
                 setDisabled(false);
+                toast.success(response.data.message);
+                const role = response.data.role.trim().toLowerCase();
                 localStorage.setItem("ACCESS_TOKEN", response.data.token);
-                localStorage.setItem("ROLE", response.data.role);
-                localStorage.setItem("NAME", response.data.name);
-                login({ name: response.data.name, role: response.data.role });
-                navigate(`/${response.data.role}`);
+                setToken(response.data.token);
+                setUser({
+                    role: role,
+                    name: response.data.name,
+                });
             })
             .catch((error) => {
-                console.log(error);
+                toast.error(error.data.message);
                 setDisabled(false);
             });
     };
@@ -88,6 +92,7 @@ export default function LoginForm() {
                     Bem-vindo ao GraphoArt.
                 </p>
             </div>
+            <ToastContainer />
         </div>
     );
 }
