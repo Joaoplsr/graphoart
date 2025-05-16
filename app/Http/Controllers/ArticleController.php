@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enum\StatusEnum;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Services\ResponseService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\ArticleStoreRequest;
 use App\Http\Requests\ArticleUpdateRequest;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ArticleController extends Controller
 {
@@ -109,4 +108,10 @@ class ArticleController extends Controller
         $article->delete();
         return ResponseService::success('Artigo deletado com sucesso', Response::HTTP_OK);
     }   
+    public function download(Article $article)
+    {
+        $pdf = Pdf::loadView('artigopdf', ['article' => $article]);
+        $fileName = 'artigo_' . $article->id . '.pdf';
+        return $pdf->download($fileName);
+    } 
 }

@@ -19,6 +19,7 @@ Route::controller(ArticleController::class)
 ->group(function () {
     Route::get('/', 'indexPublic')->name('api.articlesguest.index-public');
     Route::get('/{article}', 'show')->name('api.articlesguest.show');
+    Route::get('/download/{article}', 'download')->name('api.articlesguest.download');
 });
 
 // Rotas Protegidas
