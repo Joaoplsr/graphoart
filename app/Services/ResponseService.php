@@ -13,12 +13,13 @@ class ResponseService {
         ], $code);
     }
 
-    public static function loginSuccess($message, $code = Response::HTTP_OK, $token, $role)
+    public static function loginSuccess($message, $code = Response::HTTP_OK, $token, $role, $name)
     {
         return response()->json([
             'message' => $message,
             'token' => $token,
-            'role' => $role
+            'role' => $role,
+            'name' => $name
         ], $code);
     }
 

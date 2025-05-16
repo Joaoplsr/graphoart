@@ -18,25 +18,25 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'role_id' => RoleEnum::ADMIN->value,
-            'password' => bcrypt(env('USERSEED_PASSWORD')),
+            'password' => bcrypt(env('USERSEED_PASSWORD', '123teste123')),
         ]);
         User::create([
             'name' => 'Editor',
             'email' => 'editor@gmail.com',
             'role_id' => RoleEnum::EDITOR->value,
-            'password' => bcrypt(env('USERSEED_PASSWORD')),
+            'password' => bcrypt(env('USERSEED_PASSWORD', '123teste123')),
         ]);
         User::create([
             'name' => 'Editor 2',
             'email' => 'editor2@gmail.com',
             'role_id' => RoleEnum::EDITOR->value,
-            'password' => bcrypt(env('USERSEED_PASSWORD')),
+            'password' => bcrypt(env('USERSEED_PASSWORD', '123teste123')),
         ]);
         User::create([
             'name' => 'Reviewer',
             'email' => 'reviewer@gmail.com',
             'role_id' => RoleEnum::REVIEWER->value,
-            'password' => bcrypt(env('USERSEED_PASSWORD')),
+            'password' => bcrypt(env('USERSEED_PASSWORD', '123teste123')),
         ]);
     }
 }
