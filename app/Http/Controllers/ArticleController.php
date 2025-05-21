@@ -86,6 +86,9 @@ class ArticleController extends Controller
     // Rotas de Manipulação de Artigos
     public function show(Article $article)
     {
+        if ($article->status_id === StatusEnum::PUBLISHED->value) {
+            $article->increment("views");
+        }
         return ResponseService::success('Artigo encontrado com sucesso', Response::HTTP_OK, $article);
     }
 
